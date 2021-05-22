@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+{% extends 'mybank/base.html' %}
+{% block body_block %}
+
+<h1>welcome user {{request.user}}</h1>
+{% for message in messages %}
+<h2>{{message}}</h2>
+{%endfor%}
+
+{% if not flag%}
+<a href="{%url 'account'%}">Create Account</a>
+{% endif %}
+
+<a href="{%url 'transactions'%}">Fund Transfer</a>
+<a href="#">View Balance</a>
+<a href="#">Payment History</a>
+
+{% endblock %}
+

@@ -1,0 +1,112 @@
+<!doctype html>
+{%load static%}
+<html lang="en">
+  <head>
+  	<title>Sidebar 07</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900" rel="stylesheet">
+		
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+		<link rel="stylesheet" href="{%static 'css/styles.css'%}">
+  </head>
+  <body>
+		
+		<div class="wrapper d-flex align-items-stretch">
+			<nav id="sidebar" class="active">
+				<h1><a href="index.html" class="logo">SBK</a></h1>
+        <ul class="list-unstyled components mb-5">
+          <li class="active">
+            <a href="{%url 'index'%}"><span class="fa fa-home"></span> Home</a>
+          </li>
+          {% if not flag%}
+          <li>
+              <a href="{%url 'account'%}"><span class="fa fa-user"></span> Create Account</a>
+          </li>
+          {% endif %}
+          <li>
+            <a href="{%url 'transactions'%}"><span class="fa fa-inr"></span> Send Money</a>
+          </li>
+          <li>
+            <a href="{%url 'transactionshistory'%}"><span class="fa fa-exchange"></span> Transaction History</a>
+          </li>
+          <li>
+            <a href="#" data-toggle="modal" data-target="#exampleModalCenter" onclick="getBalance()"><span class="fa fa-money"></span> Balance</a>
+          </li>
+        </ul>
+
+
+    	</nav>
+
+
+          <!-- Button trigger modal -->
+<!--<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">-->
+<!--  Launch demo modal-->
+<!--</button>-->
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="background-color: #94e3a9;">
+        <h5 class="modal-title" id="exampleModalLongTitle">Account Balance</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="result">
+        ...
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+<!--        <button type="button" class="btn btn-primary">Save changes</button>-->
+      </div>
+    </div>
+  </div>
+</div>
+
+        <!-- Page Content  -->
+      <div id="content" class="p-4 p-md-5">
+
+        <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #94e3a9;">
+          <div class="container-fluid">
+
+            <button type="button" id="sidebarCollapse" class="btn btn-primary">
+              <i class="fa fa-bars"></i>
+              <span class="sr-only">Toggle Menu</span>
+            </button>
+            <button class="btn btn-dark d-inline-block d-lg-none ml-auto" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <i class="fa fa-bars"></i>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+              <ul class="nav navbar-nav ml-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#"><span class="fa fa-user-circle-o fa-lg">&nbsp{{request.user}}</span></a>
+                </li>
+                  <li class="nav-item">
+                     <a class="nav-link" href="{%url 'signout'%}"><span class="fa fa-sign-out fa-lg"></span> Sign out</a>
+<!--                    <a class="nav-link" href="#">Logout</a>-->
+                </li>
+              </ul>
+            </div>
+          </div>
+        </nav>
+
+      {% block body_block %}
+
+        {% endblock %}
+      </div>
+		</div>
+
+
+    <script src="{%static 'js/jquery.min.js'%}"></script>
+    <script src="{%static 'js/popper.js'%}"></script>
+    <script src="{%static 'js/bootstrap.min.js'%}"></script>
+    <script src="{%static 'js/main.js'%}"></script>
+  <script src="{%static 'js/script.js'%}"></script>
+  </body>
+
+</html>

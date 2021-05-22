@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+{% extends 'mybank/base.html' %}
+{% block body_block %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-6">
+            <div class="debit_trans">
+                <h3>Debit</h3>
+<table class="table" style="color:red">
+
+    {%for transaction in dtransactions%}
+    <tr>
+
+        <td>{{transaction.date}}</td>
+        <td>{{transaction.to_accno}}</td>
+        <td>{{transaction.amount}}</td>
+
+
+    </tr>
+    {%endfor%}
+
+
+    </table>
+            </div>
+        </div>
+
+        <div class="col-6">
+            <div class="credit_trans">
+                <h3>Credit</h3>
+<table class="table" style="color: green;">
+
+    {%for transaction in ctransactions%}
+    <tr>
+
+        <td>{{transaction.date}}</td>
+        <td>{{transaction.to_accno}}</td>
+        <td>{{transaction.amount}}</td>
+
+
+    </tr>
+    {%endfor%}
+</table>
+    </div>
+</div>
+    </div>
+</div>
+
+        {% endblock %}
