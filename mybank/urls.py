@@ -15,7 +15,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,include
-from .views import UserRegister,LoginView,AccountCreateView,index,Transactionview,signout,ViewBalance,TransactionHistory
+from .views import UserRegister,LoginView,AccountCreateView,index,Transactionview,signout,ViewBalance,TransactionHistory, \
+    RegisterLoginView
+
 
 urlpatterns = [
     path("register/",UserRegister.as_view(),name="register"),
@@ -25,5 +27,6 @@ urlpatterns = [
     path("transactions",Transactionview.as_view(),name="transactions"),
     path("logout",signout,name="signout"),
     path("balEnq",ViewBalance.as_view(),name="balEnq"),
-    path("transactionshistory",TransactionHistory.as_view(),name="transactionshistory")
+    path("transactionshistory",TransactionHistory.as_view(),name="transactionshistory"),
+    path("registerlogin",RegisterLoginView.as_view(),name="registerlogin")
 ]

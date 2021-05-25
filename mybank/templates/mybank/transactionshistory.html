@@ -2,6 +2,14 @@
 {% extends 'mybank/base.html' %}
 {% block body_block %}
 
+ {% if message in message%}
+<div class="container">
+    <h2 style="color:#94e3a9;">{{message}}</h2>
+    <h5>To Create an Account Click Here &nbsp&nbsp<i class="fa fa-hand-o-right" aria-hidden="true">&nbsp</i><a style="color:blue" href="{%url 'account'%}">Create Account</a></h5>
+</div>
+
+
+{% else %}
 <div class="container">
     <div class="row">
         <div class="col-6">
@@ -45,5 +53,5 @@
 </div>
     </div>
 </div>
-
+{% endif %}
         {% endblock %}

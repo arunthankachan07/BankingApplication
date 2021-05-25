@@ -7,7 +7,8 @@ from django.views.generic import TemplateView
 from .forms import UserRegistrationForm,LoginForm,CreateAccountForm,TransactionCreateForm
 from .models import CustomUser,Account,Transactions
 from django.utils.decorators import method_decorator
-from .decorators import account_created_validator
+from .decorators import account_created_validator,login_required
+from django.http import HttpResponse
 
 class UserRegister(TemplateView):
     model=CustomUser
@@ -48,12 +49,69 @@ class LoginView(TemplateView):
                 djangologin(request,user)
                 print("success")
                 return redirect("index")
-
             else:
                 print("failed")
                 self.context["form"]=self.form_class()
                 return render(request, self.template_name, self.context)
+        else:
+            print("failed")
+            self.context["form"] = form
+            return render(request, self.template_name, self.context)
 
+
+#Registration and login in same template
+class RegisterLoginView(TemplateView):
+    model=CustomUser
+    template_name = "mybank/register_login.html"
+    sign_in_form=LoginForm
+    sign_up_form=UserRegistrationForm
+    context={}
+    def get(self, request, *args, **kwargs):
+        print("test")
+        self.context["form"]={'sign_in_form':self.sign_in_form,'sign_up_form':self.sign_up_form}
+        return render(request,self.template_name,self.context)
+    def post(self, request, *args, **kwargs):
+        #----------login codes-------------
+        if "signin" in request.POST:
+            print("signin")
+            form = self.sign_in_form(request.POST)
+            if form.is_valid():
+                username = form.cleaned_data.get("username")
+                password = form.cleaned_data.get("password")
+                # user=authenticate(request,username=username,password=password)
+                user = self.model.objects.get(username=username)
+                if (user.username == username) & (user.password == password):
+                    djangologin(request, user)
+                    print("success")
+                    return redirect("index")
+
+                else:
+                    print("failed")
+                    self.context["form"] = {'sign_in_form': self.sign_in_form, 'sign_up_form': self.sign_up_form}
+                    return render(request, self.template_name, self.context)
+            else:
+                self.context["form"] = {'sign_in_form': self.sign_in_form, 'sign_up_form': self.sign_up_form}
+                return render(request, self.template_name, self.context)
+
+        #---------registration code----------
+        elif "signup" in request.POST:
+            print("signup")
+            form = self.sign_up_form(request.POST)
+            if form.is_valid():
+
+                form.save()
+                print("saved")
+                return redirect("registerlogin")
+            else:
+
+                self.context["form"] = form
+                return render(request, self.template_name, self.context)
+        else:
+            self.context["form"] = {'sign_in_form': self.sign_in_form, 'sign_up_form': self.sign_up_form}
+            return render(request, self.template_name, self.context)
+
+
+@method_decorator(login_required,name='dispatch')
 @method_decorator(account_created_validator,name='dispatch')
 class AccountCreateView(TemplateView):
     model=Account
@@ -79,7 +137,7 @@ class AccountCreateView(TemplateView):
             self.context["form"]=form
             return render(request,self.template_name,self.context)
 
-# @method_decorator(login_required,name='dispatch')
+@login_required
 def index(request):
     context={}
     try:
@@ -96,16 +154,29 @@ class GetUser(object):
     def get_user(self,account_num):
         return Account.objects.get(account_num=account_num)
 
-# @method_decorator(login_required,name='dispatch')
+@method_decorator(login_required,name='dispatch')
+
 class Transactionview(TemplateView,GetUser):
     model= Transactions
     template_name = "mybank/transactions.html"
     form_class=TransactionCreateForm
     context={}
     def get(self, request, *args, **kwargs):
-        self.context["form"]=self.form_class(initial={'user':request.user})
-        return render(request,self.template_name,self.context)
+        try:
+            current_acc = Account.objects.get(user=request.user)
+            status=current_acc.active_status
+            print(status)
+            if status =="Inactive":
+                msg = "Sorry,Your Account is not Activated!"
+                return render(request, self.template_name, {'msg': msg})
+            else:
+                self.context["form"]=self.form_class(initial={'user':request.user})
+                return render(request,self.template_name,self.context)
+        except:
+            message = "Sorry,You have no Account Created!"
+            return render(request,self.template_name, {'message': message})
     def post(self,request,*args,**kwargs):
+
         form = self.form_class(request.POST)
         if form.is_valid():
 
@@ -123,27 +194,40 @@ class Transactionview(TemplateView,GetUser):
                                      to_accno=to_account,
                                      remarks=remarks)
             transaction.save()
+
             return redirect("index")
         else:
             self.context["form"] = form
             return render(request, self.template_name, self.context)
 
-# @method_decorator(login_required,name='dispatch')
+@method_decorator(login_required,name='dispatch')
 class ViewBalance(TemplateView):
     def get(self, request, *args, **kwargs):
-        account=Account.objects.get(user=request.user)
-        balance=account.balance
-        return JsonResponse({'balance':balance})
+        try:
+            account=Account.objects.get(user=request.user)
+            balance=account.balance
+            print(balance)
+            return JsonResponse({'balance':balance})
+        except:
+            balance=0;
+            print(balance)
+            return JsonResponse({'balance': balance})
 
-# @method_decorator(login_required,name='dispatch')
+@method_decorator(login_required,name='dispatch')
 class TransactionHistory(TemplateView):
     def get(self, request, *args, **kwargs):
-        debit_transactions=Transactions.objects.filter(user=request.user)
-        l_user=Account.objects.get(user=request.user)
-        credit_transactions=Transactions.objects.filter(to_accno=l_user.account_num)
-        return render(request,"mybank/transactionshistory.html",{'dtransactions':debit_transactions,
-                                                          'ctransactions':credit_transactions})
+        try:
+            debit_transactions = Transactions.objects.filter(user=request.user)
+            l_user = Account.objects.get(user=request.user)
+            credit_transactions = Transactions.objects.filter(to_accno=l_user.account_num)
+            return render(request, "mybank/transactionshistory.html", {'dtransactions': debit_transactions,
+                                                                       'ctransactions': credit_transactions})
+        except:
+
+            message="You have no Account Created!"
+            return render(request, "mybank/transactionshistory.html", {'message':message})
+
 
 def signout(request):
     logout(request)
-    return redirect("login")
+    return redirect("registerlogin")

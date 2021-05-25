@@ -1,4 +1,4 @@
-body {
+.bodyreg {
     margin: 0;
     color: #6a6f8c;
     background: url('../images/img_1.png') no-repeat center fixed;
@@ -201,3 +201,54 @@ a {
 ::placeholder {
     color: #b3b3b3
 }
+.main{
+    text-align:center;
+    width:100%;
+    border:3px solid #034522;
+    background-color:transparent;
+
+    border-radius:10px;
+    color:#034522;
+}
+
+.text_inp{
+color:green;
+font-size: 17px;
+font-weight: 500;
+width:92%;
+
+
+border-bottom: 2px solid #034522;
+border-radius:100px;
+outline: 0;
+background:transparent;
+}
+ ::placeholder {
+
+    font-size: 14px;
+    }
+
+
+label{
+text-align: left;
+font-size: 16px;
+font-weight: 700;
+}
+
+
+  .btn_submit{
+width:92%;
+margin-bottom:5%;
+background-color: #94e3a9;
+color: #034522;
+border: hidden;
+border-radius:100px;
+font-size:25px;
+font-weight: 700;
+font-family: Arial, Helvetica, sans-serif;
+cursor: pointer;
+}
+.btn_submit:hover{
+                background-color: #034522;
+                color: #94e3a9;
+            }

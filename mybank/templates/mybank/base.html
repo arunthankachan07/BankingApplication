@@ -10,6 +10,7 @@
 		
 		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 		<link rel="stylesheet" href="{%static 'css/styles.css'%}">
+    <link rel="stylesheet" href="{%static 'css/style.css'%}">
   </head>
   <body>
 		
@@ -25,6 +26,7 @@
               <a href="{%url 'account'%}"><span class="fa fa-user"></span> Create Account</a>
           </li>
           {% endif %}
+
           <li>
             <a href="{%url 'transactions'%}"><span class="fa fa-inr"></span> Send Money</a>
           </li>
@@ -68,7 +70,7 @@
 </div>
 
         <!-- Page Content  -->
-      <div id="content" class="p-4 p-md-5">
+      <div id="content" class="">
 
         <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #94e3a9;">
           <div class="container-fluid">
@@ -84,7 +86,7 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
               <ul class="nav navbar-nav ml-auto">
                 <li class="nav-item active">
-                    <a class="nav-link" href="#"><span class="fa fa-user-circle-o fa-lg">&nbsp{{request.user}}</span></a>
+                    <a class="nav-link" href="#"><span class="fa fa-user-circle-o fa-lg">&nbsp{{request.user| capfirst}}</span></a>
                 </li>
                   <li class="nav-item">
                      <a class="nav-link" href="{%url 'signout'%}"><span class="fa fa-sign-out fa-lg"></span> Sign out</a>

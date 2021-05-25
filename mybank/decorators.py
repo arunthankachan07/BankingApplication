@@ -9,7 +9,7 @@ def account_created_validator(func):
         try:
             account = Account.objects.get(user=request.user)
             status = account.active_status
-            if status == "Active":
+            if (status == "Active") & (status=="Inactive"):
                 messages.error(request,"account created for this user")
                 return redirect("index")
             else:
@@ -18,10 +18,11 @@ def account_created_validator(func):
             return func(request, *args, **kwargs)
     return wrapper
 
-# def login_required(func):
-#     def wrapper(request,*args,**kwargs):
-#         if request.user.is_authenticated:
-#             return func(request,*args,**kwargs)
-#         else:
-#             return redirect("login")
-#     return wrapper
+def login_required(func):
+    def wrapper(request,*args,**kwargs):
+        if request.user.is_authenticated:
+            return func(request,*args,**kwargs)
+        else:
+            return redirect("registerlogin")
+    return wrapper
+

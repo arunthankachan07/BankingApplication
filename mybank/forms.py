@@ -36,11 +36,11 @@ class CreateAccountForm(ModelForm):
         }
 
 class TransactionCreateForm(forms.Form):
-    user=forms.CharField()
-    to_account_no=forms.CharField(max_length=120)
-    confirm_account_no=forms.CharField()
-    amount=forms.CharField(max_length=5)
-    remarks=forms.CharField()
+    user=forms.CharField(widget=forms.TextInput(attrs={'class':'text_inp','id':'user','readonly':True}),label="Username")
+    to_account_no=forms.CharField(widget=forms.TextInput(attrs={'class':'text_inp','id':'user','placeholder':'Enter Account No'}),label="Account Number")
+    confirm_account_no=forms.CharField(widget=forms.TextInput(attrs={'class':'text_inp','id':'user','placeholder':'Confirm Account No '}),label="Confirm Account No")
+    amount=forms.CharField(widget=forms.TextInput(attrs={'class':'text_inp','id':'user','placeholder':'Enter Amount'}),label="Amount")
+    remarks=forms.CharField(widget=forms.TextInput(attrs={'class':'text_inp','id':'user','placeholder':'Remarks'}),label="Remarks")
 
     def clean(self):
         cleaned_data=super().clean()
