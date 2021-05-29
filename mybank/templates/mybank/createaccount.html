@@ -1,19 +1,23 @@
 <!DOCTYPE html>
 {% extends 'mybank/base.html' %}
 {% block body_block %}
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+
 <form method="post">
-{%csrf_token%}
-{{form.as_p}}
-<input type="submit">
-    </form>
 
-</body>
-</html>
+<div class="container">
+ <div class="row">
+        <div class="col-6">
+            <div class="main_userprofile">
+                <h3 style="background-color:#022a6b;color:white">Create Account</h3>
+                {%csrf_token%}
+                {{form.as_p}}
 
+                <input type="submit" value="CREATE" class="button_fields" >
+            </div>
+        </div>
+        <div class="col-6"></div>
+    </div>
+</div>
+
+</form>
 {%endblock%}

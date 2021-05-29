@@ -98,8 +98,10 @@ class Transactions(models.Model):
     user=models.ForeignKey(CustomUser,on_delete=models.CASCADE)
     amount=models.IntegerField()
     to_accno=models.CharField(max_length=120)
+    from_accno=models.CharField(max_length=120,null=True)
     date=models.DateField(auto_now=True)
     remarks=models.CharField(max_length=120)
+
 
     def __str__(self):
         return self.user

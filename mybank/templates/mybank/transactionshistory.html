@@ -12,20 +12,30 @@
 {% else %}
 <div class="container">
     <div class="row">
+    <div class="col-12">
+        <h3 style="text-align:center;background-color:#022a6b; color:white;">Transactions History</h3>
+    </div>
+</div>
+</div>
+<div class="container">
+    <div class="row">
         <div class="col-6">
             <div class="debit_trans">
                 <h3>Debit</h3>
-<table class="table" style="color:red">
+<table class="table" style="color:black;">
 
     {%for transaction in dtransactions%}
+
     <tr>
 
-        <td>{{transaction.date}}</td>
-        <td>{{transaction.to_accno}}</td>
-        <td>{{transaction.amount}}</td>
+        <td><i class="fa fa-arrow-circle-up" aria-hidden="true" style="color:red;"></i></td>
+        <td>
+            <a href="#" data-toggle="modal" data-target="#getDebitDetail" onclick="getDebit({{transaction.id}})">SBK-OUT/{{transaction.date}}/{{transaction.to_accno}}/....</a></td>
+        <td style="color:red;">-₹{{transaction.amount}}.00</td>
 
 
     </tr>
+
     {%endfor%}
 
 
@@ -36,14 +46,14 @@
         <div class="col-6">
             <div class="credit_trans">
                 <h3>Credit</h3>
-<table class="table" style="color: green;">
+<table class="table" style="color: black;">
 
     {%for transaction in ctransactions%}
     <tr>
+        <td><i class="fa fa-arrow-circle-down" aria-hidden="true" style="color:green;"></i></td>
+        <td>SBK-IN/{{transaction.date}}/{{transaction.from_accno}}/....</td>
 
-        <td>{{transaction.date}}</td>
-        <td>{{transaction.to_accno}}</td>
-        <td>{{transaction.amount}}</td>
+        <td style="color:green;">+₹{{transaction.amount}}.00</td>
 
 
     </tr>
@@ -54,4 +64,27 @@
     </div>
 </div>
 {% endif %}
+
+
+<!-- Modal -->
+<div class="modal fade" id="getDebitDetail" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="background-color: #022a6b;">
+        <h5 class="modal-title" id="exampleModalLongTitle" style="color:white;">Transaction Details</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="debit">
+        ...
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+<!--        <button type="button" class="btn btn-primary">Save changes</button>-->
+      </div>
+    </div>
+  </div>
+</div>
         {% endblock %}

@@ -9,6 +9,7 @@ from .models import CustomUser,Account,Transactions
 from django.utils.decorators import method_decorator
 from .decorators import account_created_validator,login_required
 from django.http import HttpResponse
+from django.contrib import messages
 
 class UserRegister(TemplateView):
     model=CustomUser
@@ -87,7 +88,8 @@ class RegisterLoginView(TemplateView):
 
                 else:
                     print("failed")
-                    self.context["form"] = {'sign_in_form': self.sign_in_form, 'sign_up_form': self.sign_up_form}
+                    err=form.errors
+                    self.context["form"] = {'sign_in_form': self.sign_in_form, 'sign_up_form': self.sign_up_form,'err':err}
                     return render(request, self.template_name, self.context)
             else:
                 self.context["form"] = {'sign_in_form': self.sign_in_form, 'sign_up_form': self.sign_up_form}
@@ -142,12 +144,14 @@ def index(request):
     context={}
     try:
         account = Account.objects.get(user=request.user)
-        status = account.active_status
-        flag = True if status == "Active" else False
+        # status = account.active_status
+        # flag = True if status == "Active" else False
+        flag = True if account else False
         context["flag"] = flag
         return render(request, "mybank/home.html", context)
     except:
         return render(request, "mybank/home.html", context)
+
 
 
 class GetUser(object):
@@ -155,28 +159,31 @@ class GetUser(object):
         return Account.objects.get(account_num=account_num)
 
 @method_decorator(login_required,name='dispatch')
-
 class Transactionview(TemplateView,GetUser):
     model= Transactions
     template_name = "mybank/transactions.html"
     form_class=TransactionCreateForm
     context={}
     def get(self, request, *args, **kwargs):
+
         try:
             current_acc = Account.objects.get(user=request.user)
+            flag = True if current_acc else False
+
             status=current_acc.active_status
             print(status)
             if status =="Inactive":
                 msg = "Sorry,Your Account is not Activated!"
-                return render(request, self.template_name, {'msg': msg})
+                return render(request, self.template_name, {'msg': msg,'flag':flag})
             else:
-                self.context["form"]=self.form_class(initial={'user':request.user})
-                return render(request,self.template_name,self.context)
+                form=self.form_class(initial={'user':request.user})
+                return render(request,self.template_name,{'form':form,'flag':flag})
         except:
-            message = "Sorry,You have no Account Created!"
-            return render(request,self.template_name, {'message': message})
+            msg1 = "Sorry,You have no Account Created!"
+            return render(request,self.template_name, {'msg1': msg1})
     def post(self,request,*args,**kwargs):
-
+        current_acc = Account.objects.get(user=request.user)
+        flag = True if current_acc else False
         form = self.form_class(request.POST)
         if form.is_valid():
 
@@ -184,18 +191,39 @@ class Transactionview(TemplateView,GetUser):
             amount=form.cleaned_data.get('amount')
             remarks=form.cleaned_data.get('remarks')
             account=self.get_user(to_account)
-            account.balance+=int(amount)
-            account.save()
-            current_acc=Account.objects.get(user=request.user)
-            current_acc.balance-=int(amount)
-            current_acc.save()
-            transaction=Transactions(user=request.user,
-                                     amount=amount,
-                                     to_accno=to_account,
-                                     remarks=remarks)
-            transaction.save()
+            if account.active_status=="Active":
+                trans=True
+                print(account.active_status)
+                account.balance+=int(amount)
+                account.save()
+                current_acc=Account.objects.get(user=request.user)
+                current_acc.balance-=int(amount)
+                current_acc.save()
+                fromaccno=current_acc.account_num
+                transaction=Transactions(user=request.user,
+                                         amount=amount,
+                                         to_accno=to_account,
+                                         remarks=remarks,
+                                         from_accno=fromaccno)
 
-            return redirect("index")
+                transaction.save()
+
+                # return redirect("index")
+                messages.success(request, 'Transaction Successful')
+                acc=Account.objects.get(account_num=to_account)
+                user_det=CustomUser.objects.get(username=acc.user)
+                t_det=Transactions.objects.all().last()
+
+
+
+                return render(request, self.template_name,{'acc':acc,'user_det':user_det,'trans':trans,'flag':flag,'t_det':t_det})
+            else:
+                messages.error(request, 'Transaction Failed')
+
+
+                return render(request, self.template_name,{'flag':flag})
+
+
         else:
             self.context["form"] = form
             return render(request, self.template_name, self.context)
@@ -217,17 +245,56 @@ class ViewBalance(TemplateView):
 class TransactionHistory(TemplateView):
     def get(self, request, *args, **kwargs):
         try:
+
             debit_transactions = Transactions.objects.filter(user=request.user)
             l_user = Account.objects.get(user=request.user)
+            flag = True if l_user else False
             credit_transactions = Transactions.objects.filter(to_accno=l_user.account_num)
+
             return render(request, "mybank/transactionshistory.html", {'dtransactions': debit_transactions,
-                                                                       'ctransactions': credit_transactions})
+                                                                       'ctransactions': credit_transactions,'flag':flag})
         except:
 
             message="You have no Account Created!"
             return render(request, "mybank/transactionshistory.html", {'message':message})
 
 
+import json
+from django.core import serializers
+from django.forms.models import model_to_dict
+@method_decorator(login_required,name='dispatch')
+class TransactionDebitDetail(TemplateView):
+    def get(self, request, *args, **kwargs,):
+        id=kwargs.get("pk")
+        debit_transactions = Transactions.objects.get(id=id)
+        # data={'id':debit_transactions.id,'amount':debit_transactions.amount,'to_accno':debit_transactions.to_accno}
+        # data=serializers.serialize('json',debit_transactions)
+        return JsonResponse(model_to_dict(debit_transactions))
+
+@method_decorator(login_required,name='dispatch')
+class TransactionCreditDetail(TemplateView):
+    def get(self, request, *args, **kwargs,):
+        id=kwargs.get("pk")
+        credit_transactions = Transactions.objects.get(id=id)
+        l_user = Account.objects.get(user=request.user)
+        flag = True if l_user else False
+
+        return JsonResponse({'ctransactions': credit_transactions,'flag':flag})
+
 def signout(request):
     logout(request)
     return redirect("registerlogin")
+
+class UserProfileView(TemplateView):
+
+    def get(self, request, *args, **kwargs):
+        try:
+            user=CustomUser.objects.get(username=request.user)
+            account=Account.objects.get(user=request.user)
+            flag = True if account else False
+
+            return render(request,"mybank/userprofile.html",{'user':user, 'account':account,'flag':flag})
+        except:
+            user = CustomUser.objects.get(username=request.user)
+
+            return render(request, "mybank/userprofile.html", {'user': user})

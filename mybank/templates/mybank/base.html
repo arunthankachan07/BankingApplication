@@ -2,19 +2,42 @@
 {%load static%}
 <html lang="en">
   <head>
-  	<title>Sidebar 07</title>
+  	<title>SBK Bank</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900" rel="stylesheet">
-		
+<!--		<script defer src="https://use.fontawesome.com/releases/v5.11.2/js/all.js"></script>-->
 		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 		<link rel="stylesheet" href="{%static 'css/styles.css'%}">
     <link rel="stylesheet" href="{%static 'css/style.css'%}">
+
+<!--    --------------------------------home templates head-->
+    <link href="{%static 'img/favicon.png' %}" rel="icon">
+  <link href="{%static 'img/apple-touch-icon.png'%}" rel="apple-touch-icon">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="{%static 'vendor/animate.css/animate.min.css' %}" rel="stylesheet">
+  <link href="{%static 'vendor/aos/aos.css'%}" rel="stylesheet' %}">
+  <link href="{%static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+  <link href="{%static 'vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+  <link href="{%static 'vendor/boxicons/css/boxicons.min.css' %}" rel="stylesheet">
+  <link href="{%static 'vendor/glightbox/css/glightbox.min.css' %}" rel="stylesheet">
+  <link href="{%static 'vendor/remixicon/remixicon.css' %}" rel="stylesheet">
+  <link href="{%static 'vendor/swiper/swiper-bundle.min.css' %}" rel="stylesheet">
+
+  <!-- Template Main CSS File -->
+  <link href="{%static 'css/style1.css' %}"  rel="stylesheet">
+
+
+
   </head>
   <body>
 		
-		<div class="wrapper d-flex align-items-stretch">
+		<div class="wrapper d-flex align-items-stretch" >
 			<nav id="sidebar" class="active">
 				<h1><a href="index.html" class="logo">SBK</a></h1>
         <ul class="list-unstyled components mb-5">
@@ -51,8 +74,8 @@
 <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
-      <div class="modal-header" style="background-color: #94e3a9;">
-        <h5 class="modal-title" id="exampleModalLongTitle">Account Balance</h5>
+      <div class="modal-header" style="background-color: #022a6b;">
+        <h5 class="modal-title" id="exampleModalLongTitle" style="color:white;">Account Balance</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -70,9 +93,9 @@
 </div>
 
         <!-- Page Content  -->
-      <div id="content" class="">
+      <div id="content">
 
-        <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #94e3a9;">
+        <nav class="navbar navbar-expand-lg navbar-light" style="background-color: rgba(6, 101, 183, 0.9);">
           <div class="container-fluid">
 
             <button type="button" id="sidebarCollapse" class="btn btn-primary">
@@ -84,31 +107,51 @@
             </button>
 
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
               <ul class="nav navbar-nav ml-auto">
                 <li class="nav-item active">
-                    <a class="nav-link" href="#"><span class="fa fa-user-circle-o fa-lg">&nbsp{{request.user| capfirst}}</span></a>
+                    <a class="nav-link" href="#"><span  style="color:white;" class="fa fa-user-circle-o fa-lg"></span>&nbsp{{request.user| capfirst}}</a>
+                </li>
+                <li class="nav-item">
+                     <a class="nav-link" href="{%url 'userprofile'%}"><span  style="color:white;" class="fa fa-user fa-lg"></span> Profile</a>
+<!--                    <a class="nav-link" href="#">Logout</a>-->
                 </li>
                   <li class="nav-item">
-                     <a class="nav-link" href="{%url 'signout'%}"><span class="fa fa-sign-out fa-lg"></span> Sign out</a>
+                     <a class="nav-link" href="{%url 'signout'%}"><span  style="color:white;" class="fa fa-sign-out fa-lg"></span> Sign out</a>
 <!--                    <a class="nav-link" href="#">Logout</a>-->
                 </li>
               </ul>
             </div>
           </div>
-        </nav>
 
-      {% block body_block %}
+        </nav>
+ {% block body_block %}
 
         {% endblock %}
       </div>
+
 		</div>
 
+
+
+  </body>
 
     <script src="{%static 'js/jquery.min.js'%}"></script>
     <script src="{%static 'js/popper.js'%}"></script>
     <script src="{%static 'js/bootstrap.min.js'%}"></script>
     <script src="{%static 'js/main.js'%}"></script>
   <script src="{%static 'js/script.js'%}"></script>
-  </body>
+
+<!--  template home files-->
+   <!-- Vendor JS Files -->
+  <script src="{%static 'vendor/aos/aos.js' %}"></script>
+  <script src="{%static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{%static 'vendor/glightbox/js/glightbox.min.js' %}"></script>
+  <script src="{%static 'vendor/isotope-layout/isotope.pkgd.min.js' %}"></script>
+  <script src="{%static 'vendor/php-email-form/validate.js' %}"></script>
+  <script src="{%static 'vendor/swiper/swiper-bundle.min.js' %}"></script>
+
+  <!-- Template Main JS File -->
+  <script src="{%static 'js/main1.js' %}"></script>
 
 </html>

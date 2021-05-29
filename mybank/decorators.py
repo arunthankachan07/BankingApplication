@@ -10,6 +10,7 @@ def account_created_validator(func):
             account = Account.objects.get(user=request.user)
             status = account.active_status
             if (status == "Active") & (status=="Inactive"):
+            # if account:
                 messages.error(request,"account created for this user")
                 return redirect("index")
             else:

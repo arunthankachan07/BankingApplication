@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path,include
 from .views import UserRegister,LoginView,AccountCreateView,index,Transactionview,signout,ViewBalance,TransactionHistory, \
-    RegisterLoginView
+    RegisterLoginView,UserProfileView,TransactionDebitDetail,TransactionCreditDetail
 
 
 urlpatterns = [
@@ -28,5 +28,10 @@ urlpatterns = [
     path("logout",signout,name="signout"),
     path("balEnq",ViewBalance.as_view(),name="balEnq"),
     path("transactionshistory",TransactionHistory.as_view(),name="transactionshistory"),
-    path("registerlogin",RegisterLoginView.as_view(),name="registerlogin")
+    path("registerlogin",RegisterLoginView.as_view(),name="registerlogin"),
+    path("userprofile",UserProfileView.as_view(),name="userprofile"),
+    path("t_debit/<int:pk>",TransactionDebitDetail.as_view(),name="t_debit"),
+    path("t_credit/<int:pk>",TransactionCreditDetail.as_view(),name="t_credit")
+
+
 ]

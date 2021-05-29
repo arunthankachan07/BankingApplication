@@ -8215,7 +8215,7 @@ h1, h2, h3, h4, h5,
 #sidebar {
   min-width: 270px;
   max-width: 270px;
-  background: #034522;
+  background: #022a6b;
   color: #fff;
   -webkit-transition: all 0.3s;
   -o-transition: all 0.3s;
@@ -8320,11 +8320,11 @@ a[data-toggle="collapse"] {
   transition: all 0.3s; }
 
 .btn.btn-primary {
-  background: #034522;
-  border-color: #034522; }
+  background: #022a6b;
+  border-color: #022a6b; }
   .btn.btn-primary:hover, .btn.btn-primary:focus {
-    background: #034522 !important;
-    border-color: #034522 !important; }
+    background: #022a6b !important;
+    border-color: #022a6b !important; }
 .debit_trans{
     text-align:center;
     width:100%;
@@ -8341,4 +8341,44 @@ a[data-toggle="collapse"] {
     background-color:transparent
     margin-top:10%;
 
+}
+
+.text_fields{
+    height: 25px;
+    border: 1px solid #dddfe2;
+
+
+    border-radius: 6px;
+
+    width: 98%;
+    padding:15px;
+    margin-left: 5px;
+    font-size: 17px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.text_fields:focus,text_fields:focus{
+
+    border-color: #022a6b;
+
+
+}
+
+
+.button_fields{
+    background-color: #022a6b;
+    border: none;
+    border-radius: 6px;
+    font-size:20px;
+    line-height: 48px;
+    padding-left: 20px;
+    width: 98%;
+    color: white;
+    font-weight: bold;
+    vertical-align: middle;
+    margin-left: 6px;
+
+}
+.button_fields:hover,button_fields:hover{
+    outline: none !important;
+    background-color: #7091d4;
 }

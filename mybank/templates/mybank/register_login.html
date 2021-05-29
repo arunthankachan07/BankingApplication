@@ -37,6 +37,7 @@
                         <div class="login">
                             <form method="post">
                             {%csrf_token%}
+                                {{form.errors}}
                             <div class="group"> <label for="user" class="label">Username</label> {{form.sign_in_form.username}} </div>
                             <div class="group"> <label for="pass" class="label">Password</label> {{form.sign_in_form.password}} </div>
                             <div class="group"> <input id="check" type="checkbox" class="check" checked> <label for="check"><span class="icon"></span> Keep me Signed in</label> </div>
@@ -50,7 +51,16 @@
                          <div class="sign-up-form">
                              <form method="post">
                             {%csrf_token%}
+
                              <div class="group"> <label for="user" class="label">Username</label> {{form.sign_up_form.username}} </div>
+                                   <div class="row">
+                                     <div class="col-6">
+                                         <div class="group"> <label for="pass" class="label">FirstName</label> {{form.sign_up_form.first_name}} </div>
+                                     </div>
+                                     <div class="col-6">
+                                         <div class="group"> <label for="pass" class="label">Last Name</label> {{form.sign_up_form.last_name}} </div>
+                                     </div>
+                                 </div>
                             <div class="group"> <label for="pass" class="label">Email Address</label> {{form.sign_up_form.email}} </div>
                             <div class="group"> <label for="pass" class="label">Password</label> {{form.sign_up_form.password}} </div>
                             <div class="group"> <label for="user" class="label">Contact Number</label> {{form.sign_up_form.phone}} </div>

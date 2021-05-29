@@ -252,3 +252,35 @@ cursor: pointer;
                 background-color: #034522;
                 color: #94e3a9;
             }
+
+
+.main_userprofile{
+
+    align-items: center;
+    background-color: #fff;
+
+    border-radius: 8px;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+    border-bottom-left-radius: 8px;
+    box-shadow: 0 2px 4px rgb(0 0 0 / 10%), 0 8px 16px rgb(0 0 0 / 10%);
+    box-sizing: border-box;
+
+    padding-right: 10px;
+    padding-left: 10px;
+    padding-top: 15px;
+    padding-bottom: 8px;
+    width: 100%;
+
+}
+.dot {
+            height: 50px;
+            width: 50px;
+            background-color: #8c4a03;
+            color:white;
+            border-radius: 50%;
+            text-align: center;
+
+
+            }

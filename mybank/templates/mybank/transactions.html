@@ -1,58 +1,100 @@
 <!DOCTYPE html>
 {% extends 'mybank/base.html' %}
 {% block body_block %}
-<form method="post">
-{% if message in message%}
+
+{% if msg1 in msg1%}
 <div class="container">
-    <h2 style="color:#94e3a9;">{{message}}</h2>
-    <h5>To Create an Account Click Here &nbsp&nbsp<i class="fa fa-hand-o-right" aria-hidden="true">&nbsp</i><a style="color:blue" href="{%url 'account'%}">Create Account</a></h5>
+    <h2 style="color:#94e3a9;">{{msg1}}</h2>
+    <h5>To Create an Account Click Here &nbsp&nbsp<i class="fa fa-hand-o-right" aria-hidden="true">&nbsp</i><a style="color:blue" href="#">Create Account</a></h5>
 </div>
-    {% elif msg in msg %}
-    <div class="container">
+{% elif msg in msg %}
+<div class="container">
     <h2 style="color:#94e3a9;">{{msg}}</h2>
-    <h5>To Activate Your Account, Kindly Please Update Your Account Status to "Active" Click Here &nbsp&nbsp<i class="fa fa-hand-o-right" aria-hidden="true">&nbsp</i><a style="color:blue" href="{%url 'account'%}">Create Account</a></h5>
+    <h5>To Activate Your Account, Kindly Please Update Your Account Status to "Active" Click Here &nbsp&nbsp<i class="fa fa-hand-o-right" aria-hidden="true">&nbsp</i><a style="color:blue" href="#">Create Account</a></h5>
 </div>
-    {% else %}
+{% elif messages %}
 
 <div class="container">
- <div class="row">
+    <div class="row">
         <div class="col-6">
-            <div class="main">
-                <h2 style="background-color:#034522;color:#94e3a9;">Fund Transfer</h2>
-                {%csrf_token%}
-                {{form.as_p}}
+            <div class="main_userprofile">
+                <h2 style="background-color:#022a6b;color:white">Fund Transfer</h2>
+                {%if trans %}
+                <ul class="messages">
+                    {% for message in messages %}
+                    <li {% if message.tags %} class=" {{ message.tags }} " {% endif %}> <h4 style="text-align:center;color:green;">{{ message }}</h4> </li>
+                    {% endfor %}
+                </ul>
 
-                <input type="submit" value="SUBMIT" class="btn_submit" >
+                <h2 style="text-align:center"><i class="fa fa-check-circle" aria-hidden="true" style="color:green;"></i>&nbsp; ₹{{t_det.amount}}</h2>
+                <h4 style="text-align:center;">paid to <strong>{{user_det.first_name | capfirst}}{{user_det.last_name | capfirst}}</strong></h4>
+                <table class="table" >
+                    <br>
+                    <h5 style="text-align:center;">Transaction Details</h5>
+                        <tr>
+                            <td>To Account</td>
+                            <td>{{acc.account_num}}</td>
+                        </tr>
+                        <tr>
+                            <td>Username</td>
+                            <td>{{user_det.username | capfirst}}</td>
+                        </tr>
+                         <tr>
+                            <td>Transaction Type</td>
+                            <td>Debit</td>
+                        </tr>
+                     <tr>
+                            <td>Date</td>
+                            <td>{{t_det.date}}</td>
+                        </tr>
+                     <tr>
+                            <td>Remarks</td>
+                            <td>{{t_det.remarks}}</td>
+                        </tr>
+
+
+
+
+
+                    </table>
+                {%else%}
+                <ul class="messages">
+                    {% for message in messages %}
+                    <li {% if message.tags %} class=" {{ message.tags }} " {% endif %}> <h4 style="text-align:center;color:red;">{{ message }}</h4> </li>
+                    {% endfor %}
+                </ul>
+                <h5 style="text-align:center;">There is a problem with the account</strong></h5>
+
+                {% endif %}
+                <a href="{% url 'transactions'%}"><button type="submit" value="OK" class="button_fields" >OK</button></a>
             </div>
         </div>
         <div class="col-6"></div>
     </div>
 </div>
-    {% endif %}
-      </form>
 
+{% else %}
+<form method="post">
+    <div class="container">
+        <div class="row">
+            <div class="col-6">
+                <div class="main_userprofile">
+                    <h2 style="background-color:#022a6b;color:white">Fund Transfer</h2>
+                    {%csrf_token%}
+                    {{form.as_p}}
 
-<!-- Modal -->
-<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header" style="background-color: #94e3a9;">
-        <h5 class="modal-title" id="exampleModalLongTitle">Account Balance</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body" id="result">
-        ...
-
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
-<!--        <button type="button" class="btn btn-primary">Save changes</button>-->
-      </div>
+                    <input type="submit" value="CREATE" class="button_fields" >
+                </div>
+            </div>
+            <div class="col-6"></div>
+        </div>
     </div>
-  </div>
-</div>
+</form>
+
+{% endif %}
+
+
+
 
 
 {% endblock %}

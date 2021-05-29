@@ -9,9 +9,11 @@ class UserRegistrationForm(ModelForm):
     class Meta:
         model=CustomUser
         # fields ="__all__"
-        fields = ["username","email","password","phone","age" ]
+        fields = ["username","first_name","last_name","email","password","phone","age" ]
         widgets = {
             'username': forms.TextInput(attrs={'class':'input','id':'user','placeholder':'Enter username'}),
+            'first_name': forms.TextInput(attrs={'class': 'input', 'id': 'user', 'placeholder': 'Enter First Name'}),
+            'last_name': forms.TextInput(attrs={'class': 'input', 'id': 'user', 'placeholder': 'Enter Last Name'}),
             'email': forms.TextInput(attrs={'class': 'input', 'id': 'user', 'placeholder': 'Enter Email Address'}),
 
             'phone': forms.TextInput(attrs={'class': 'input', 'id': 'user', 'placeholder': 'Enter Your Contact No.'}),
@@ -31,16 +33,20 @@ class CreateAccountForm(ModelForm):
 
         fields=["account_num","balance","account_type","user","active_status"]
         widgets={
-            'account_num':forms.TextInput(attrs={'readonly':True}),
+            'account_num':forms.TextInput(attrs={'class':'form-control','readonly':True}),
+            'balance':forms.NumberInput(attrs={'class':'form-control'}),
+            "account_type":forms.Select(attrs={'class':'form-control'}),
+            'user':forms.Select(attrs={'class':'form-control'}),
+            'active_status': forms.Select(attrs={'class':'form-control'})
 
         }
 
 class TransactionCreateForm(forms.Form):
-    user=forms.CharField(widget=forms.TextInput(attrs={'class':'text_inp','id':'user','readonly':True}),label="Username")
-    to_account_no=forms.CharField(widget=forms.TextInput(attrs={'class':'text_inp','id':'user','placeholder':'Enter Account No'}),label="Account Number")
-    confirm_account_no=forms.CharField(widget=forms.TextInput(attrs={'class':'text_inp','id':'user','placeholder':'Confirm Account No '}),label="Confirm Account No")
-    amount=forms.CharField(widget=forms.TextInput(attrs={'class':'text_inp','id':'user','placeholder':'Enter Amount'}),label="Amount")
-    remarks=forms.CharField(widget=forms.TextInput(attrs={'class':'text_inp','id':'user','placeholder':'Remarks'}),label="Remarks")
+    user=forms.CharField(widget=forms.TextInput(attrs={'class':'text_fields','id':'user','readonly':True}),label="Username")
+    to_account_no=forms.CharField(widget=forms.TextInput(attrs={'class':'text_fields','id':'user','placeholder':'Enter Account No'}),label="Account Number")
+    confirm_account_no=forms.CharField(widget=forms.TextInput(attrs={'class':'text_fields','id':'user','placeholder':'Confirm Account No '}),label="Confirm Account No")
+    amount=forms.CharField(widget=forms.TextInput(attrs={'class':'text_fields','id':'user','placeholder':'Enter Amount'}),label="Amount")
+    remarks=forms.CharField(widget=forms.TextInput(attrs={'class':'text_fields','id':'user','placeholder':'Remarks'}),label="Remarks")
 
     def clean(self):
         cleaned_data=super().clean()

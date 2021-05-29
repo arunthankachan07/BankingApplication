@@ -2,18 +2,53 @@
 {% extends 'mybank/base.html' %}
 {% block body_block %}
 
-<h1>welcome user {{request.user | upper}}</h1>
-{% for message in messages %}
-<h2>{{message}}</h2>
-{%endfor%}
 
-{% if not flag%}
-<a href="{%url 'account'%}">Create Account</a>
-{% endif %}
+  <!-- ======= Hero Section ======= -->
+  <section id="hero" class="d-flex justify-content-center align-items-center">
 
-<a href="{%url 'transactions'%}">Fund Transfer</a>
-<a href="#">View Balance</a>
-<a href="#">Payment History</a>
+    <div id="heroCarousel" data-bs-interval="5000" class="container carousel carousel-fade" data-bs-ride="carousel">
+
+      <!-- Slide 1 -->
+      <div class="carousel-item active">
+        <div class="carousel-container">
+          <h2 class="animate__animated animate__fadeInDown">WELCOME TO SBK BANK<span></span></h2>
+          <p class="animate__animated animate__fadeInUp">OPEN YOUR PREFERRED SAVINGS ACCOUNT FROM ANYWHERE. </p>
+          <p class="animate__animated animate__fadeInUp"> INVEST TODAY FOR A BRIGHTER TOMORROW</p>
+          <a href="#about" class="btn-get-started animate__animated animate__fadeInUp scrollto">Read More</a>
+        </div>
+      </div>
+
+      <!-- Slide 2 -->
+      <div class="carousel-item">
+        <div class="carousel-container">
+          <h2 class="animate__animated animate__fadeInDown">Experience The Next Generation Banking</h2>
+          <p class="animate__animated animate__fadeInUp"> A TRULY SPECTACULAR PERSONALISED BANKING EXPERIENCE</p>
+
+          <a href="#about" class="btn-get-started animate__animated animate__fadeInUp scrollto">Read More</a>
+        </div>
+      </div>
+
+      <!-- Slide 3 -->
+      <div class="carousel-item">
+        <div class="carousel-container">
+          <h2 class="animate__animated animate__fadeInDown">EACH OF US HAS THE POWER TO MAKE A DIFFERENCE</h2>
+          <p class="animate__animated animate__fadeInUp">CONTRIBUTE GENEROUSLY TO THE PM CARES FUND</p>
+          <a href="#about" class="btn-get-started animate__animated animate__fadeInUp scrollto">Read More</a>
+        </div>
+      </div>
+
+      <a class="carousel-control-prev" href="#heroCarousel" role="button" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon bx bx-chevron-left" aria-hidden="true"></span>
+      </a>
+
+      <a class="carousel-control-next" href="#heroCarousel" role="button" data-bs-slide="next">
+        <span class="carousel-control-next-icon bx bx-chevron-right" aria-hidden="true"></span>
+      </a>
+
+    </div>
+  </section><!-- End Hero -->
+
+
 
 {% endblock %}
 
