@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<head>
+  <title>SBK | Edit User Profile</title>
+</head>
+{% extends 'mybank/base.html' %}
+{% block body_block %}
+<form action="" method="post">
+<div class="container">
+ <div class="row">
+     <div class="col-3"></div>
+        <div class="col-6">
+            <div class="main_userprofile">
+                <h3 style="background-color:#022a6b;color:white">Update Profile</h3>
+                {%csrf_token%}
+                {{form_user.as_p}}
+ {{form_account.as_p}}
+
+                <input type="submit" value="CREATE" class="button_fields" >
+            </div>
+        </div>
+    <div class="col-3"></div>
+    </div>
+</div>
+
+
+
+
+</form>
+{% endblock %}

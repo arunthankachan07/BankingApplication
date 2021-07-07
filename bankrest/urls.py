@@ -15,9 +15,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,include
+from .views import AccountMixinView,UserMixinView,TransactionMixinView,UserMixinDetail
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('',include('mybank.urls')),
-    path('bankrest/',include('bankrest.urls'))
+    path("account/",AccountMixinView.as_view(),name="accounts"),
+    path("user/",UserMixinView.as_view(),name="user"),
+    path("transaction/",TransactionMixinView.as_view(),name="transaction"),
+    path("user/<int:pk>",UserMixinDetail.as_view(),name="detail_user")
+
+
+
 ]

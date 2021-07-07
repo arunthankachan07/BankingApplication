@@ -37,7 +37,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'mybank'
+    'mybank',
+    'bankrest',
+    'rest_framework',
+    'django_twilio',
 ]
 
 MIDDLEWARE = [
@@ -136,3 +139,9 @@ STATIC_URL = '/static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL="mybank.CustomUser"
+
+DATE_INPUT_FORMATS = ('%d/%m/%Y','%d-%m-%Y','%Y-%m-%d')
+
+TWILIO_ACCOUNT_SID = 'AC4247dad049db0c1f379496546e665250'
+TWILIO_AUTH_TOKEN = '2a253e7128aef262c13363c651f30aee'
+TWILIO_PHONE_NUMBER= '+12408959562'

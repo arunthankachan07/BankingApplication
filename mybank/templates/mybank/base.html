@@ -71,6 +71,7 @@
 <!--</button>-->
 
 <!-- Modal -->
+
 <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
@@ -110,7 +111,7 @@
 
               <ul class="nav navbar-nav ml-auto">
                 <li class="nav-item active">
-                    <a class="nav-link" href="#"><span  style="color:white;" class="fa fa-user-circle-o fa-lg"></span>&nbsp{{request.user| capfirst}}</a>
+                    <a class="nav-link" href="#"><span  style="color:white;" class="fa fa-user-circle-o fa-lg"></span>&nbsp Hello, {{request.user| capfirst}}</a>
                 </li>
                 <li class="nav-item">
                      <a class="nav-link" href="{%url 'userprofile'%}"><span  style="color:white;" class="fa fa-user fa-lg"></span> Profile</a>

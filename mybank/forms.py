@@ -1,7 +1,10 @@
-from django.forms import ModelForm
+from django.forms import ModelForm, DateInput
 from django import forms
 
+from Bankproject import settings
 from .models import CustomUser,Account,Transactions
+from bootstrap_datepicker_plus import DatePickerInput
+
 
 
 class UserRegistrationForm(ModelForm):
@@ -28,6 +31,7 @@ class LoginForm(forms.Form):
 
 
 class CreateAccountForm(ModelForm):
+    # user=forms.CharField
     class Meta:
         model=Account
 
@@ -68,3 +72,41 @@ class TransactionCreateForm(forms.Form):
         if int(amount)>int(avlbalance):
             message="insufficient balance"
             self.add_error('amount',message)
+
+
+
+class UserEditForm(ModelForm):
+    class Meta:
+        model = CustomUser
+        fields = ["username","first_name","last_name","email","phone"]
+        widgets = {
+            'username': forms.TextInput(attrs={'class': 'form-control', 'readonly': True}),
+            'first_name': forms.TextInput(attrs={'class': 'form-control', 'readonly': True}),
+            'last_name': forms.TextInput(attrs={'class': 'form-control', 'readonly': True}),
+            'email': forms.TextInput(attrs={'class': 'form-control'}),
+
+            'phone': forms.TextInput(attrs={'class': 'form-control'}),
+
+
+        }
+
+class AccountEditForm(ModelForm):
+
+    class Meta:
+        model = Account
+        fields = ["account_num","account_type","active_status"]
+        widgets = {
+            'account_num': forms.TextInput(attrs={'class': 'form-control', 'readonly': True}),
+            "account_type": forms.Select(attrs={'class': 'form-control'}),
+
+            'active_status': forms.Select(attrs={'class': 'form-control'})
+
+        }
+
+
+
+class HistoryFilterForm(forms.Form):
+    #date = forms.DateField(widget=forms.DateInput(attrs={'id':'datepicker','class':'text_inp',}),input_formats=['%d/%m/%Y'],label='Pick Date')
+    # date=forms.CharField(widget=forms.TextInput(attrs={'id':'datepicker','class':'text_inp',}),label='Pick Date')
+    date = forms.DateField(widget=DateInput(format = '%Y-%m-%d',attrs={'type':'date','class':'form-control-sm'}),label='Pick Date',
+                           input_formats=settings.DATE_INPUT_FORMATS)

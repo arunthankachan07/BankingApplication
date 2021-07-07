@@ -1,4 +1,8 @@
 <!DOCTYPE html>
+<head>
+    <title>SBK | History</title>
+</head>
+
 {% extends 'mybank/base.html' %}
 {% block body_block %}
 
@@ -10,18 +14,36 @@
 
 
 {% else %}
+
 <div class="container">
     <div class="row">
     <div class="col-12">
         <h3 style="text-align:center;background-color:#022a6b; color:white;">Transactions History</h3>
+
     </div>
 </div>
 </div>
+<form action="" method="post">
 <div class="container">
     <div class="row">
+        <div class="col-6" style="text-align:right;">
+             {%csrf_token%}
+                {{form.as_p}}
+
+        </div>
         <div class="col-6">
+            <input type="submit" value="GO" class="btn btn-primary btn-sm">
+            <a href="{%url 'transactionshistory'%}" class="btn btn-primary btn-sm">Refresh</a>
+        </div>
+    </div>
+</div>
+     </form>
+<div class="container">
+    <div class="row">
+
+        <div class="col-lg-6 col-md-6 col-sm-12">
             <div class="debit_trans">
-                <h3>Debit</h3>
+
 <table class="table" style="color:black;">
 
     {%for transaction in dtransactions%}
@@ -43,15 +65,16 @@
             </div>
         </div>
 
-        <div class="col-6">
+        <div class="col-lg-6 col-md-6 col-sm-12">
             <div class="credit_trans">
-                <h3>Credit</h3>
+
 <table class="table" style="color: black;">
 
     {%for transaction in ctransactions%}
     <tr>
         <td><i class="fa fa-arrow-circle-down" aria-hidden="true" style="color:green;"></i></td>
-        <td>SBK-IN/{{transaction.date}}/{{transaction.from_accno}}/....</td>
+        <td>
+            <a href="#" data-toggle="modal" data-target="#getCreditDetail" onclick="getCredit({{transaction.id}})">SBK-IN/{{transaction.date}}/{{transaction.from_accno}}/....</a></td>
 
         <td style="color:green;">+₹{{transaction.amount}}.00</td>
 
@@ -66,7 +89,7 @@
 {% endif %}
 
 
-<!-- Modal -->
+<!-- Modal for debit transaction detail view-->
 <div class="modal fade" id="getDebitDetail" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
@@ -87,4 +110,29 @@
     </div>
   </div>
 </div>
+
+
+<!-- Modal for credit transaction detail view-->
+<div class="modal fade" id="getCreditDetail" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="background-color: #022a6b;">
+        <h5 class="modal-title" id="exampleModalLongTitle" style="color:white;">Transaction Details</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="credit">
+        ...
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+<!--        <button type="button" class="btn btn-primary">Save changes</button>-->
+      </div>
+    </div>
+  </div>
+</div>
+
+
         {% endblock %}

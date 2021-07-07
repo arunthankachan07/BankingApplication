@@ -1,17 +1,21 @@
 <!DOCTYPE html>
+<head>
+  <title>SBK | User Profile</title>
+</head>
 {% extends 'mybank/base.html' %}
 {% block body_block %}
 
 
 <div class="container">
     <div class="row">
-        <div class="col-3"></div>
-        <div class="col-6">
+        <div class="col-lg-3"></div>
+        <div class="col-lg-6 col-sm-12">
             <div class="main_userprofile">
                 <div style="background-color:#022a6b;height:60px;padding-left:20px;padding-top:1%;">
                     <div class="dot" style="float:left"><h3 style="color:white;font-weight:500;padding-top:15%;">{{user.first_name.0 | capfirst}} {{user.last_name.0 | capfirst}}</h3></div>
 
-                <div><h4 style="color:white; font-weight:300;padding-top:2%;">&nbsp;{{user.first_name | capfirst}}  {{user.last_name | capfirst}}</h4></div>
+                <div style="float:left"><h4 style="color:white; font-weight:300;padding-top:5%;">&nbsp;{{user.first_name | capfirst}}  {{user.last_name | capfirst}}</h4> </div>
+                    <div style="text-align:right;color:white;padding-top:2%;padding-right:5%;"><a href="{% url 'update_user_profile' user.id%}"><i class="fa fa-pencil" aria-hidden="true">edit profile</i></a></div>
                 </div>
                 <div>
                     <table class="table">
@@ -61,7 +65,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-3"></div>
+        <div class="col-lg-3"></div>
     </div>
 </div>
 

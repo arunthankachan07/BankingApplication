@@ -4,12 +4,16 @@ from django.shortcuts import render,redirect
 
 # Create your views here.
 from django.views.generic import TemplateView
-from .forms import UserRegistrationForm,LoginForm,CreateAccountForm,TransactionCreateForm
+from .forms import UserRegistrationForm,LoginForm,CreateAccountForm,TransactionCreateForm,UserEditForm,AccountEditForm,HistoryFilterForm
 from .models import CustomUser,Account,Transactions
 from django.utils.decorators import method_decorator
 from .decorators import account_created_validator,login_required
 from django.http import HttpResponse
 from django.contrib import messages
+from django.forms.models import model_to_dict
+
+from twilio.rest import Client
+from django.conf import settings
 
 class UserRegister(TemplateView):
     model=CustomUser
@@ -80,18 +84,29 @@ class RegisterLoginView(TemplateView):
                 username = form.cleaned_data.get("username")
                 password = form.cleaned_data.get("password")
                 # user=authenticate(request,username=username,password=password)
-                user = self.model.objects.get(username=username)
-                if (user.username == username) & (user.password == password):
-                    djangologin(request, user)
-                    print("success")
-                    return redirect("index")
-
-                else:
-                    print("failed")
-                    err=form.errors
-                    self.context["form"] = {'sign_in_form': self.sign_in_form, 'sign_up_form': self.sign_up_form,'err':err}
+                try:
+                    user = self.model.objects.get(username=username)
+                    if user.username == username:
+                        if user.password == password:
+                            djangologin(request, user)
+                            print("success")
+                            return redirect("index")
+                        else:
+                            messages.error(request, 'Password is incorrect')
+                            self.context["form"] = {'sign_in_form': self.sign_in_form,
+                                                    'sign_up_form': self.sign_up_form}
+                            return render(request, self.template_name, self.context)
+                    else:
+                        messages.error(request, 'Username or password incorrect')
+                        self.context["form"] = {'sign_in_form': self.sign_in_form,
+                                                'sign_up_form': self.sign_up_form}
+                        return render(request, self.template_name, self.context)
+                except:
+                    messages.error(request, 'Invalid Username or password')
+                    self.context["form"] = {'sign_in_form': self.sign_in_form, 'sign_up_form': self.sign_up_form}
                     return render(request, self.template_name, self.context)
             else:
+                messages.error(request, 'Invalid Username or password')
                 self.context["form"] = {'sign_in_form': self.sign_in_form, 'sign_up_form': self.sign_up_form}
                 return render(request, self.template_name, self.context)
 
@@ -208,12 +223,18 @@ class Transactionview(TemplateView,GetUser):
 
                 transaction.save()
 
-                # return redirect("index")
                 messages.success(request, 'Transaction Successful')
                 acc=Account.objects.get(account_num=to_account)
                 user_det=CustomUser.objects.get(username=acc.user)
-                t_det=Transactions.objects.all().last()
-
+                t_det = Transactions.objects.all().last()
+                # Twilio Sms Sending
+                # to = '+91'+user_det.phone
+                # client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
+                # response = client.messages.create(
+                #     body='Dear Customer, Rs.'+str(amount)+'credited to your A/c'+to_account+'from A/c'+fromaccno+
+                #          '.Available Bal- Rs.'+str(acc.balance)+'-SBK BANK',
+                #     to=to, from_=settings.TWILIO_PHONE_NUMBER)
+                # --------------
 
 
                 return render(request, self.template_name,{'acc':acc,'user_det':user_det,'trans':trans,'flag':flag,'t_det':t_det})
@@ -243,25 +264,38 @@ class ViewBalance(TemplateView):
 
 @method_decorator(login_required,name='dispatch')
 class TransactionHistory(TemplateView):
+    model = Transactions
+    template_name = "mybank/transactionshistory.html"
+    form_class = HistoryFilterForm
+    context = {}
     def get(self, request, *args, **kwargs):
         try:
-
+            form = self.form_class
+            debit_transactions = Transactions.objects.filter(user=request.user).order_by('-id')[:5]
+            l_user = Account.objects.get(user=request.user)
+            flag = True if l_user else False
+            credit_transactions = Transactions.objects.filter(to_accno=l_user.account_num).order_by('-id')[:5]
+            return render(request, "mybank/transactionshistory.html", {'dtransactions': debit_transactions,
+                                                                       'ctransactions': credit_transactions,'flag':flag,'form':form})
+        except:
+            message="You have no Account Created!"
+            return render(request, "mybank/transactionshistory.html", {'message':message})
+    def post(self, request, *args,**kwargs):
+        form=self.form_class(request.POST)
+        if form.is_valid():
+            date=form.cleaned_data.get('date')
+            print(date)
             debit_transactions = Transactions.objects.filter(user=request.user)
+            on_date_debit=debit_transactions.filter(date=date)
             l_user = Account.objects.get(user=request.user)
             flag = True if l_user else False
             credit_transactions = Transactions.objects.filter(to_accno=l_user.account_num)
-
-            return render(request, "mybank/transactionshistory.html", {'dtransactions': debit_transactions,
-                                                                       'ctransactions': credit_transactions,'flag':flag})
-        except:
-
-            message="You have no Account Created!"
-            return render(request, "mybank/transactionshistory.html", {'message':message})
+            on_date_credit=credit_transactions.filter(date=date)
+            return render(request, "mybank/transactionshistory.html", {'dtransactions': on_date_debit,
+                                                                       'ctransactions': on_date_credit,
+                                                                       'flag': flag, 'form': form})
 
 
-import json
-from django.core import serializers
-from django.forms.models import model_to_dict
 @method_decorator(login_required,name='dispatch')
 class TransactionDebitDetail(TemplateView):
     def get(self, request, *args, **kwargs,):
@@ -269,6 +303,7 @@ class TransactionDebitDetail(TemplateView):
         debit_transactions = Transactions.objects.get(id=id)
         # data={'id':debit_transactions.id,'amount':debit_transactions.amount,'to_accno':debit_transactions.to_accno}
         # data=serializers.serialize('json',debit_transactions)
+        print(model_to_dict(debit_transactions))
         return JsonResponse(model_to_dict(debit_transactions))
 
 @method_decorator(login_required,name='dispatch')
@@ -276,17 +311,14 @@ class TransactionCreditDetail(TemplateView):
     def get(self, request, *args, **kwargs,):
         id=kwargs.get("pk")
         credit_transactions = Transactions.objects.get(id=id)
-        l_user = Account.objects.get(user=request.user)
-        flag = True if l_user else False
-
-        return JsonResponse({'ctransactions': credit_transactions,'flag':flag})
+        print(credit_transactions.date)
+        return JsonResponse(model_to_dict(credit_transactions))
 
 def signout(request):
     logout(request)
     return redirect("registerlogin")
 
 class UserProfileView(TemplateView):
-
     def get(self, request, *args, **kwargs):
         try:
             user=CustomUser.objects.get(username=request.user)
@@ -296,5 +328,54 @@ class UserProfileView(TemplateView):
             return render(request,"mybank/userprofile.html",{'user':user, 'account':account,'flag':flag})
         except:
             user = CustomUser.objects.get(username=request.user)
-
             return render(request, "mybank/userprofile.html", {'user': user})
+
+
+class UserProfileUpdate(TemplateView):
+    user_model = CustomUser
+    account_model=Account
+    template_name = "mybank/updateprofile.html"
+    user_form = UserEditForm
+    account_form= AccountEditForm
+    context = {}
+    lookup=0
+    def get(self, request, *args, **kwargs):
+        self.lookup=kwargs.get("pk")
+        try:
+            user=self.user_model.objects.get(id=self.lookup)
+            account=self.account_model.objects.get(user_id=user.id)
+            form_user=self.user_form(instance=user)
+            form_account=self.account_form(instance=account)
+            return render(request, self.template_name, {'form_user': form_user,'form_account': form_account})
+        except:
+            user = self.user_model.objects.get(id=self.lookup)
+            form_user = self.user_form(instance=user)
+            return render(request, self.template_name, {'form_user': form_user})
+    def post(self,request,*args,**kwargs):
+        self.lookup = kwargs.get("pk")
+        try:
+            user = self.user_model.objects.get(id=self.lookup)
+            account = self.account_model.objects.get(user_id=user.id)
+            form_user = self.user_form(request.POST, instance=user)
+            form_account = self.account_form(request.POST, instance=account)
+            print("test")
+            if (form_user.is_valid()) & (form_account.is_valid()):
+                form_user.save()
+                form_account.save()
+                print("success1")
+                return redirect("userprofile")
+            else:
+                print("failed")
+                return render(request, self.template_name, {'form_user': form_user, 'form_account': form_account})
+        except:
+            user = self.user_model.objects.get(id=self.lookup)
+            form_user = self.user_form(request.POST, instance=user)
+            print("test")
+            if form_user.is_valid():
+                form_user.save()
+                print("success1")
+                return redirect("userprofile")
+            else:
+                print("failed")
+                return render(request, self.template_name, {'form_user': form_user})
+
